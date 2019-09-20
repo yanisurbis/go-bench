@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"io/ioutil"
-	"os"
 	"testing"
 )
 
@@ -36,14 +35,14 @@ func TestSearch(t *testing.T) {
 
 func BenchmarkSlow(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		//SlowSearch(ioutil.Discard)
-		SlowSearch(os.Stdout)
+		SlowSearch(ioutil.Discard)
+		//SlowSearch(os.Stdout)
 	}
 }
 
 func BenchmarkFast(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		//FastSearch(ioutil.Discard)
-		FastSearch(os.Stdout)
+		FastSearch(ioutil.Discard)
+		//FastSearch(os.Stdout)
 	}
 }
