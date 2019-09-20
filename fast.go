@@ -3,11 +3,9 @@ package main
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"regexp"
-	"strings"
-	//"bufio"
+	"bufio"
 	json "encoding/json"
 	easyjson "github.com/mailru/easyjson"
 	jlexer "github.com/mailru/easyjson/jlexer"
@@ -120,26 +118,24 @@ func FastSearch(out io.Writer) {
 		_ = file.Close()
 	}()
 
-	fileContents, err := ioutil.ReadAll(file)
-	if err != nil {
-		panic(err)
-	}
-
 	seenBrowsers := make([]string, 0, 10)
 	uniqueBrowsers := 0
 	foundUsers := ""
+	users := make([]User, 0, 50)
 
-	lines := strings.Split(string(fileContents), "\n")
-
-	users := make([]User, 0, len(lines))
-	for _, line := range lines {
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
 		user := User{}
 		// fmt.Printf("%v %v\n", err, line)
-		err := user.UnmarshalJSON([]byte(line))
+		err := user.UnmarshalJSON(scanner.Bytes())
 		if err != nil {
 			panic(err)
 		}
 		users = append(users, user)
+	}
+
+	if err := scanner.Err(); err != nil {
+		panic(err)
 	}
 
 	for i, user := range users {
