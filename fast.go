@@ -7,6 +7,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	//"bufio"
 	json "encoding/json"
 	easyjson "github.com/mailru/easyjson"
 	jlexer "github.com/mailru/easyjson/jlexer"
@@ -110,16 +111,21 @@ func (v *User) UnmarshalJSON(data []byte) error {
 // вам надо написать более быструю оптимальную этой функции
 func FastSearch(out io.Writer) {
 	file, err := os.Open(filePath)
+
 	if err != nil {
 		panic(err)
 	}
+
+	defer func() {
+		_ = file.Close()
+	}()
 
 	fileContents, err := ioutil.ReadAll(file)
 	if err != nil {
 		panic(err)
 	}
 
-	seenBrowsers := []string{}
+	seenBrowsers := make([]string, 0, 10)
 	uniqueBrowsers := 0
 	foundUsers := ""
 
