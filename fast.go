@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	//"go/scanner"
 	"io"
 	"os"
 	"regexp"
@@ -121,24 +122,17 @@ func FastSearch(out io.Writer) {
 	seenBrowsers := make([]string, 0, 10)
 	uniqueBrowsers := 0
 	foundUsers := ""
-	users := make([]User, 0, 50)
+	user := User{}
+	i := -1
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		user := User{}
+		i += 1
 		// fmt.Printf("%v %v\n", err, line)
 		err := user.UnmarshalJSON(scanner.Bytes())
 		if err != nil {
 			panic(err)
 		}
-		users = append(users, user)
-	}
-
-	if err := scanner.Err(); err != nil {
-		panic(err)
-	}
-
-	for i, user := range users {
 
 		isAndroid := false
 		isMSIE := false
@@ -176,6 +170,10 @@ func FastSearch(out io.Writer) {
 		// log.Println("Android and MSIE user:", user["name"], user["email"])
 		email := r.ReplaceAllString(user.Email, " [at] ")
 		foundUsers += fmt.Sprintf("[%d] %s <%s>\n", i, user.Name, email)
+	}
+
+	if err := scanner.Err(); err != nil {
+		panic(err)
 	}
 
 	_, _ = fmt.Fprintln(out, "found users:\n"+foundUsers)
