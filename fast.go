@@ -10,6 +10,10 @@ import (
 	"strings"
 )
 
+var r = regexp.MustCompile("@")
+var regexpAndroid = regexp.MustCompile("Android")
+var regexpMSIE = regexp.MustCompile("MSIE")
+
 // вам надо написать более быструю оптимальную этой функции
 func FastSearch(out io.Writer) {
 	file, err := os.Open(filePath)
@@ -22,14 +26,13 @@ func FastSearch(out io.Writer) {
 		panic(err)
 	}
 
-	r := regexp.MustCompile("@")
 	seenBrowsers := []string{}
 	uniqueBrowsers := 0
 	foundUsers := ""
 
 	lines := strings.Split(string(fileContents), "\n")
 
-	users := make([]map[string]interface{}, 0, len(lines))
+	users := make([]map[string]interface{}, 0)
 	for _, line := range lines {
 		user := make(map[string]interface{})
 		// fmt.Printf("%v %v\n", err, line)
@@ -57,7 +60,7 @@ func FastSearch(out io.Writer) {
 				// log.Println("cant cast browser to string")
 				continue
 			}
-			if ok, err := regexp.MatchString("Android", browser); ok && err == nil {
+			if regexpAndroid.MatchString(browser) {
 				isAndroid = true
 				notSeenBefore := true
 				for _, item := range seenBrowsers {
@@ -79,7 +82,7 @@ func FastSearch(out io.Writer) {
 				// log.Println("cant cast browser to string")
 				continue
 			}
-			if ok, err := regexp.MatchString("MSIE", browser); ok && err == nil {
+			if regexpMSIE.MatchString(browser) {
 				isMSIE = true
 				notSeenBefore := true
 				for _, item := range seenBrowsers {
