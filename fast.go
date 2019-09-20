@@ -144,36 +144,26 @@ func FastSearch(out io.Writer) {
 		browsers := user.Browsers
 
 		for _, browser := range browsers {
+			notSeenBefore := false
 			if regexpAndroid.MatchString(browser) {
 				isAndroid = true
-				notSeenBefore := true
-				for _, item := range seenBrowsers {
-					if item == browser {
-						notSeenBefore = false
-					}
-				}
-				if notSeenBefore {
-					// log.Printf("SLOW New browser: %s, first seen: %s", browser, user["name"])
-					seenBrowsers = append(seenBrowsers, browser)
-					uniqueBrowsers++
-				}
+				notSeenBefore = true
 			}
-		}
-
-		for _, browser := range browsers {
 			if regexpMSIE.MatchString(browser) {
 				isMSIE = true
-				notSeenBefore := true
+				notSeenBefore = true
+			}
+			if notSeenBefore {
 				for _, item := range seenBrowsers {
 					if item == browser {
 						notSeenBefore = false
 					}
 				}
-				if notSeenBefore {
-					// log.Printf("SLOW New browser: %s, first seen: %s", browser, user["name"])
-					seenBrowsers = append(seenBrowsers, browser)
-					uniqueBrowsers++
-				}
+			}
+			if notSeenBefore {
+				// log.Printf("SLOW New browser: %s, first seen: %s", browser, user["name"])
+				seenBrowsers = append(seenBrowsers, browser)
+				uniqueBrowsers++
 			}
 		}
 

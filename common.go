@@ -11,7 +11,7 @@ import (
 	// "log"
 )
 
-const filePath string = "./data/users1.txt"
+const filePath string = "./data/users.txt"
 
 func SlowSearch(out io.Writer) {
 	file, err := os.Open(filePath)
