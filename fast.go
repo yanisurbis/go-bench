@@ -125,7 +125,7 @@ func FastSearch(out io.Writer) {
 
 	lines := strings.Split(string(fileContents), "\n")
 
-	users := make([]User, 0)
+	users := make([]User, 0, len(lines))
 	for _, line := range lines {
 		user := User{}
 		// fmt.Printf("%v %v\n", err, line)
